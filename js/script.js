@@ -256,15 +256,12 @@ function FilterAndZoom(filter) {
 
 function FilterAndZoomforvillage(filter) {
   // fitbous(filter)
-  Village_Boundary1.setParams({
+  Village_Boundary.setParams({
     CQL_FILTER: filter,
     maxZoom: 19.5,
     styles: 'Village_Highlight'
   }).addTo(map);
-  // Plot_Layout.setParams({
-  //   CQL_FILTER: filter,
-  //   maxZoom: 19.5,
-  // }).addTo(map);
+
 };
 
 
@@ -638,7 +635,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
               // styles: "IWMS_points"
             });
 
-            Village_Boundary1.setParams({
+            Village_Boundary.setParams({
               CQL_FILTER: cqlFilter,
               maxZoom: 19.5,
               styles: "Village_Highlight"
@@ -647,7 +644,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             
 
 
-            console.log("Adding IWMS_point, IWMS_line, and IWMS_polygon layers with filter:", cqlFilter);
+            console.log("Adding layers with filter:", cqlFilter);
             Plot_Layout.addTo(map).bringToFront();
            Village_Boundary1.addTo(map).bringToFront();
             fitbous(cqlFilter);

@@ -1,13 +1,13 @@
 <?php
 // Database configuration
 $host = 'iwmsgis.pmc.gov.in';  
-$dbname = 'Test';
+$dbname = 'AutoDCR';
 $port = 5432;
 $username = 'postgres';
 $password = 'pmc992101'; // Replace with your PostgreSQL password
- 
+
 // Create connection
-$conn = pg_connect("host=$host dbname=$dbname port=$port user=$username password=$password");
+$conn = pg_connect("host=$host port=$port dbname=$dbname user=$username password=$password");
 
 // Check connection
 if (!$conn) {
@@ -88,13 +88,13 @@ if (pg_num_rows($checkResult) > 0) {
             additionsinnetplotarea_plotinapprovedlayout = $55,
             additionsinnetplotarea_proposedslumtdrarea = $56,
             additionsinnetplotarea_amenitytdrarea = $57,
-            BCP_No = $58
+             \"BCP_No\" = $58
         WHERE token = $1;
     ";
     $updateResult = pg_query_params($conn, $updateQuery, [
         $data['token'],
         $data['ownerinformation_firstname'],
-        $data['ownerinformation_middlename'],  // Fix duplicate issue
+        $data['ownerinformation_middlename'],
         $data['ownerinformation_lastname'],
         $data['ownerinformation_address'],
         $data['ownerinformation_poa'],
@@ -161,7 +161,7 @@ if (pg_num_rows($checkResult) > 0) {
     // Token doesn't exist, so we insert a new record
     $insertQuery = "
         INSERT INTO plot1_layouts_test (
-            token, ownerinformation_firstname, ownerinformation_middlename, ownerinformation_lastname,
+            token, ownerinformation_firstname, ownerinformation_middlename, ownerinformation_lastname, 
             ownerinformation_address, ownerinformation_poa, ownerinformation_email, ownerinformation_contactdetails,
             caseinformation_applyfor, caseinformation_projecttype, caseinformation_casetype, caseinformation_proposaltype,
             caseinformation_locationzone, caseinformation_tdrzone, caseinformation_tdrarea, caseinformation_area,
@@ -170,16 +170,17 @@ if (pg_num_rows($checkResult) > 0) {
             caseinformation_ancillaryareafsi, caseinformation_totalpremiumfsi, caseinformation_accommodationreservation,
             caseinformation_typeofaccommodationreservation, caseinformation_specialproject, caseinformation_whetherincentive,
             siteaddress_area, siteaddress_surveyno, siteaddress_finalplotno, siteaddress_hissano, siteaddress_ctsno,
-            siteaddress_plotno, siteaddress_societyname, siteaddress_pincode, plotdetails_area, plotdetails_areazone,
-            plotdetails_r7for, plotdetails_propertytdrzone, plotdetails_receivingtdrzone, plotdetails_developmentzonedp,
+            siteaddress_plotno, siteaddress_societyname, siteaddress_pincode, plotdetails_area, plotdetails_areazone, 
+            plotdetails_r7for, plotdetails_propertytdrzone, plotdetails_receivingtdrzone, plotdetails_developmentzonedp, 
             plotabuttingdetails_plottype, plotabuttingdetails_readyreckonervaluationofplot, additionsinnetplotarea_roadwidening,
             additionsinnetplotarea_amenity, additionsinnetplotarea_reservation, additionsinnetplotarea_existingroad,
             additionsinnetplotarea_transformerarea, additionsinnetplotarea_internalroad, additionsinnetplotarea_proposedaccessroad,
             additionsinnetplotarea_dproad, additionsinnetplotarea_commonamenity, additionsinnetplotarea_recreationalopenspace,
-            additionsinnetplotarea_plotinapprovedlayout, additionsinnetplotarea_proposedslumtdrarea, additionsinnetplotarea_amenitytdrarea,
-            BCP_No
+            additionsinnetplotarea_plotinapprovedlayout, additionsinnetplotarea_proposedslumtdrarea, additionsinnetplotarea_amenitytdrarea, BCP_No
         ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, 
+            $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, 
+            $49, $50, $51, $52, $53, $54, $55, $56, $57, $58
         );
     ";
     $insertResult = pg_query_params($conn, $insertQuery, [
@@ -241,6 +242,7 @@ if (pg_num_rows($checkResult) > 0) {
         $data['additionsinnetplotarea_proposedslumtdrarea'],
         $data['additionsinnetplotarea_amenitytdrarea'],
         $data['BCP_No']
+        // Continue with the rest of the parameters...
     ]);
 
     if ($insertResult) {
@@ -250,5 +252,6 @@ if (pg_num_rows($checkResult) > 0) {
     }
 }
 
+// Close connection
 pg_close($conn);
 ?>

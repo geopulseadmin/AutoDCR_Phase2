@@ -1,9 +1,8 @@
-//    cluster
-   
-   var apply_for = {};
+/// cluster
+var proposaltype = {};
 
-    // Define gradient colors for each caseinformation_proposaltype
-    var caseinformation_proposaltypeColors = {
+// Define gradient colors for each caseinformation_proposaltype
+var caseinformation_proposaltypeColors = {
     "Residential": "yellow", // Yellow
     "Commercial": "blue", // Blue
     "Industrial": "violet", // Violet
@@ -11,147 +10,168 @@
     "Resi+Comm": "orange", // Orange
     "Institutional": "pink", // Pink
     "InfoTech": "indigo", // Indigo
-    "Assembly": "green", // Green
-    // Default gradient color if proposaltype is not defined
+    "Assembly": "green" // Green
+};
 
-    };
+// Define colors for case types (new or revised)
+var caseTypeColors = {
+    "New": "red",      // Red outline for new cases
+    "Revised": "#40E0D0", // Green outline for revised cases
+    // "Extension": "blue" // Blue outline for extension cases
+};
 
+// Get the legend container
+var legendContainer = document.getElementById('cluster_legend');
 
-    // Get the legend container
-    var legendContainer = document.getElementById('cluster_legend');
+// Loop through the proposaltype colors and create the legend items
+for (var caseinformation_proposaltype in caseinformation_proposaltypeColors) {
+    if (caseinformation_proposaltypeColors.hasOwnProperty(caseinformation_proposaltype)) {
+        // Create a new div for the legend item
+        var legendItem = document.createElement('div');
+        legendItem.className = 'cluster_legend-item';
 
-    // Loop through the proposaltype colors and create the legend items
-    for (var caseinformation_proposaltype in caseinformation_proposaltypeColors) {
-        if (caseinformation_proposaltypeColors.hasOwnProperty(caseinformation_proposaltype)) {
-            // Create a new div for the legend item
-            var legendItem = document.createElement('div');
-            legendItem.className = 'cluster_legend-item';
+        // Create the color box
+        var colorBox = document.createElement('div');
+        colorBox.className = 'cluster_legend-color';
+        colorBox.style.backgroundColor = caseinformation_proposaltypeColors[caseinformation_proposaltype];
 
-            // Create the color box
-            var colorBox = document.createElement('div');
-            colorBox.className = 'cluster_legend-color';
-            colorBox.style.backgroundColor = caseinformation_proposaltypeColors[caseinformation_proposaltype];
+        // Create the label
+        var label = document.createElement('span');
+        label.textContent = caseinformation_proposaltype;
 
-            // Create the label
-            var label = document.createElement('span');
-            label.textContent = caseinformation_proposaltype;
+        // Append the color box and label to the legend item
+        legendItem.appendChild(colorBox);
+        legendItem.appendChild(label);
 
-            // Append the color box and label to the legend item
-            legendItem.appendChild(colorBox);
-            legendItem.appendChild(label);
+        // Append the legend item to the legend container
+        legendContainer.appendChild(legendItem);
+    }
+}
 
-            // Append the legend item to the legend container
-            legendContainer.appendChild(legendItem);
-        }
+// Function to create custom cluster icons with gradients and outline based on case type
+function createClusterIcon(cluster) {
+    var childCount = cluster.getChildCount();
+
+    // Get the caseinformation_proposaltype and case_type from the first marker in the cluster
+    var marker = cluster.getAllChildMarkers()[0];
+    var caseinformation_proposaltype = marker.feature.properties.caseinformation_proposaltype;
+    var caseinformation_casetype = marker.feature.properties.caseinformation_casetype; // Assume this property exists for case type
+    
+    console.log("Case Type:", caseinformation_casetype); // Debugging to check case type
+
+    // Handle missing case information
+    if (!caseinformation_casetype) {
+        console.warn("Missing case type for proposal type:", caseinformation_proposaltype);
+        caseinformation_casetype = 'Unknown'; // Use a consistent default if missing
     }
 
+    var gradient = caseinformation_proposaltypeColors[caseinformation_proposaltype] || 'radial-gradient(65.32% 65.32% at 60% 60%, rgba(0, 0, 0, 0.10) 0%, #000000 100%)'; // Default gradient
+    var borderColor = caseTypeColors[caseinformation_casetype] || "black"; // Default to black if case_type is not defined
 
-    // Function to create custom cluster icons with gradients based on the caseinformation_proposaltype
-    function createClusterIcon(cluster) {
-        var childCount = cluster.getChildCount();
-        var caseinformation_proposaltype = cluster.getAllChildMarkers()[0].feature.properties.caseinformation_proposaltype;
-        var gradient = caseinformation_proposaltypeColors[caseinformation_proposaltype] || 'radial-gradient(65.32% 65.32% at 60% 60%, rgba(0, 0, 0, 0.10) 0%, #000000 100%)'; // Default to black gradient if caseinformation_proposaltype color is not found
+    var size = Math.max(Math.sqrt(childCount) * 5, 20); // Ensure a minimum size of 20px
 
-        var size = Math.max(Math.sqrt(childCount) * 5, 20); // Ensure a minimum size of 20px
-        return L.divIcon({
-            html: '<div class="bufferColor cluster-text" style="background: ' + gradient + '; width: ' + size + 'px; height: ' + size + 'px; line-height: ' + size + 'px;">' + childCount + '</div>',
-            className: 'custom-cluster-icon',
-            iconSize: [size, size] // Adjust the size based on the number of markers
-        });
-    }
-
-    // Function to load and process GeoJSON data
-    function loadAndProcessGeoJSON(main_url, layername, filter) {
-    clearClusters();  
-        const urlm = `${main_url}ows?service=WFS&version=1.0.0&request=GetFeature&typeName=${layername}&CQL_FILTER=${filter}&outputFormat=application/json`;
-        //console.log(urlm,"kkekeekekeke")
-
-        $.ajax({
-            url: urlm,
-            dataType: 'json',
-            success: function (geojsonData) {
-                if (!geojsonData.features || !Array.isArray(geojsonData.features)) {
-                    console.error('Invalid GeoJSON data structure:', geojsonData);
-                    return;
-                }
-
-                // Group features by caseinformation_proposaltype
-                geojsonData.features.forEach(function (feature) {
-                    if (feature && feature.geometry && feature.properties && feature.properties.caseinformation_proposaltype) {
-                        var caseinformation_proposaltype = feature.properties.caseinformation_proposaltype;
-                        if (!apply_for[caseinformation_proposaltype]) {
-                            apply_for[caseinformation_proposaltype] = L.markerClusterGroup({
-                                iconCreateFunction: createClusterIcon
-                            });
-                        }
-
-                        var processedFeatures = processFeature(feature);
-                        if (processedFeatures.length) {
-                            L.geoJSON(processedFeatures, {
-                                pointToLayer: function (feature, latlng) {
-                                    var gradient = caseinformation_proposaltypeColors[feature.properties.caseinformation_proposaltype] || 'radial-gradient(65.32% 65.32% at 50% 50%, rgba(0, 0, 0, 0.10) 0%, #000000 100%)'; // Default to black gradient if caseinformation_proposaltype color is not found
-                                    return L.marker(latlng, {
-                                        icon: L.divIcon({
-                                            className: 'custom-marker-icon',
-                                            html: '<div style="background: ' + gradient + '; width: 10px; height: 10px; border-radius: 50%;"></div>'
-                                        })
-                                    });
-                                }
-                            }).addTo(apply_for[caseinformation_proposaltype]);
-                        }
-                    }
-                });
-
-                // Add each caseinformation_proposaltype's marker cluster group to the map
-                Object.keys(apply_for).forEach(function (caseinformation_proposaltype) {
-                    map.addLayer(apply_for[caseinformation_proposaltype]);
-                });
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error('Error loading GeoJSON:', textStatus, errorThrown);
-                //console.log('Response Text:', jqXHR.responseText); // Log the response text to debug
-            }
-        });
-    }
-
-    // Function to process a single feature and return an array of processed features
-    function processFeature(feature) {
-        switch (feature.geometry.type) {
-            case 'Polygon':
-            case 'MultiPolygon':
-                var centroid = turf.centroid(feature);
-                return [{
-                    type: 'Feature',
-                    geometry: centroid.geometry,
-                    properties: feature.properties
-                }];
-            case 'Point':
-                return [feature];
-            case 'MultiPoint':
-                return feature.geometry.coordinates.map(function (coords) {
-                    return {
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Point',
-                            coordinates: coords
-                        },
-                        properties: feature.properties
-                    };
-                });
-            default:
-                console.warn('Unsupported geometry type:', feature.geometry.type);
-                return [];
-        }
-    }
-
-
-    function clearClusters() {
-    Object.keys(apply_for).forEach(function (caseinformation_proposaltype) {
-        map.removeLayer(apply_for[caseinformation_proposaltype]);
-        apply_for[caseinformation_proposaltype].clearLayers();
+    return L.divIcon({
+        html: '<div class="bufferColor cluster-text" style="background: ' + gradient + '; width: ' + size + 'px; height: ' + size + 'px; line-height: ' + size + 'px; border: 5px solid ' + borderColor + ';">' + childCount + '</div>',
+        className: 'custom-cluster-icon',
+        iconSize: [size, size] // Adjust the size based on the number of markers
     });
-    apply_for = {}; // Reset the apply_for object
+}
+
+// Function to load and process GeoJSON data
+// Function to load and process GeoJSON data
+function loadAndProcessGeoJSON(main_url, layername, filter) {
+    clearClusters();  
+    const urlm = `${main_url}ows?service=WFS&version=1.0.0&request=GetFeature&typeName=${layername}&CQL_FILTER=${filter}&outputFormat=application/json`;
+
+    $.ajax({
+        url: urlm,
+        dataType: 'json',
+        success: function (geojsonData) {
+            if (!geojsonData.features || !Array.isArray(geojsonData.features)) {
+                console.error('Invalid GeoJSON data structure:', geojsonData);
+                return;
+            }
+
+            // Group features by caseinformation_proposaltype
+            geojsonData.features.forEach(function (feature) {
+                if (feature && feature.geometry && feature.properties && feature.properties.caseinformation_proposaltype) {
+                    var caseinformation_proposaltype = feature.properties.caseinformation_proposaltype;
+                    if (!proposaltype[caseinformation_proposaltype]) {
+                        proposaltype[caseinformation_proposaltype] = L.markerClusterGroup({
+                            iconCreateFunction: createClusterIcon
+                        });
+                    }
+
+                    var processedFeatures = processFeature(feature);
+                    if (processedFeatures.length) {
+                        L.geoJSON(processedFeatures, {
+                            pointToLayer: function (feature, latlng) {
+                                var gradient = caseinformation_proposaltypeColors[feature.properties.caseinformation_proposaltype] || 'radial-gradient(65.32% 65.32% at 50% 50%, rgba(0, 0, 0, 0.10) 0%, #000000 100%)'; // Default gradient if not found
+                                var caseinformation_casetype = feature.properties.caseinformation_casetype; // Get the case type
+                                var borderColor = caseTypeColors[caseinformation_casetype] || "black"; // Default to black if case_type is not defined
+
+                                // Create a marker with a border
+                                return L.marker(latlng, {
+                                    icon: L.divIcon({
+                                        className: 'custom-marker-icon',
+                                        html: '<div style="background: ' + gradient + '; width: 10px; height: 10px; border-radius: 50%; border: 2px solid ' + borderColor + ';"></div>'
+                                    })
+                                });
+                            }
+                        }).addTo(proposaltype[caseinformation_proposaltype]);
+                    }
+                }
+            });
+
+            // Add each caseinformation_proposaltype's marker cluster group to the map
+            Object.keys(proposaltype).forEach(function (caseinformation_proposaltype) {
+                map.addLayer(proposaltype[caseinformation_proposaltype]);
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('Error loading GeoJSON:', textStatus, errorThrown);
+        }
+    });
+}
+
+// Function to process feature geometries
+function processFeature(feature) {
+    switch (feature.geometry.type) {
+        case 'Polygon':
+        case 'MultiPolygon':
+            var centroid = turf.centroid(feature);
+            return [{
+                type: 'Feature',
+                geometry: centroid.geometry,
+                properties: feature.properties
+            }];
+        case 'Point':
+            return [feature];
+        case 'MultiPoint':
+            return feature.geometry.coordinates.map(function (coords) {
+                return {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: coords
+                    },
+                    properties: feature.properties
+                };
+            });
+        default:
+            console.warn('Unsupported geometry type:', feature.geometry.type);
+            return [];
     }
+}
+
+// Function to clear clusters
+function clearClusters() {
+    Object.keys(proposaltype).forEach(function (caseinformation_proposaltype) {
+        map.removeLayer(proposaltype[caseinformation_proposaltype]);
+        proposaltype[caseinformation_proposaltype].clearLayers();
+    });
+    proposaltype = {}; // Reset the proposaltype object
+}
 
     // --------------------------------------------------------
 
