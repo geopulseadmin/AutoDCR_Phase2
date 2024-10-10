@@ -4193,7 +4193,6 @@ border-radius: 5px 5px 5px 5px;
 .daterange-container {
   display: none; /* Initially hidden */
   position: absolute; /* Position it under the button */
-  top: 70px; /* Adjust to position below the button */
   right: 10px; /* Align with the button */
   background-color: #fff; /* Background color */
   padding: 10px; /* Padding */
