@@ -4247,3 +4247,25 @@ border-radius: 5px 5px 5px 5px;
 }
 
 
+/* cluster blink */
+@keyframes blinkBorder {
+  0% {
+    border-color: var(--border-color, red);
+  }
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: var(--border-color, red);
+  }
+}
+
+.blinking-border {
+  animation: blinkBorder 2s ease-in-out infinite; /* 1-second blink duration */
+}
+
+/* Ensure all marker icons use the CSS variable for border-color */
+.custom-marker-icon div,
+.custom-cluster-icon div {
+  border-color: var(--border-color, red);
+}
