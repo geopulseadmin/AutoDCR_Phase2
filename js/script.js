@@ -123,7 +123,7 @@
                 projectFiMap.set(column_name, 1);
               }
             }
-        
+            
           });
           var uniqueProjectFiList = Array.from(projectFiMap.entries()).map(([name, count]) => `${name} (${count})`);
           populateDropdown(filtername, uniqueProjectFiList);

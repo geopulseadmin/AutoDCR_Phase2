@@ -1,52 +1,6 @@
 /// cluster
 var proposaltype = {};
 
-// Define gradient colors for each caseinformation_proposaltype
-var caseinformation_proposaltypeColors = {
-    "Residential": "yellow", // Yellow
-    "Commercial": "blue", // Blue
-    "Industrial": "violet", // Violet
-    "Other": "gray", // Custom Color
-    "Resi+Comm": "orange", // Orange
-    "Institutional": "pink", // Pink
-    "InfoTech": "indigo", // Indigo
-    "Assembly": "green" // Green
-};
-
-// Define colors for case types (new or revised)
-var caseTypeColors = {
-    "New": "red",      // Red outline for new cases
-    "Revised": "#40E0D0", // Green outline for revised cases
-    // "Extension": "blue" // Blue outline for extension cases
-};
-
-// Get the legend container
-var legendContainer = document.getElementById('cluster_legend');
-
-// Loop through the proposaltype colors and create the legend items
-for (var caseinformation_proposaltype in caseinformation_proposaltypeColors) {
-    if (caseinformation_proposaltypeColors.hasOwnProperty(caseinformation_proposaltype)) {
-        // Create a new div for the legend item
-        var legendItem = document.createElement('div');
-        legendItem.className = 'cluster_legend-item';
-
-        // Create the color box
-        var colorBox = document.createElement('div');
-        colorBox.className = 'cluster_legend-color';
-        colorBox.style.backgroundColor = caseinformation_proposaltypeColors[caseinformation_proposaltype];
-
-        // Create the label
-        var label = document.createElement('span');
-        label.textContent = caseinformation_proposaltype;
-
-        // Append the color box and label to the legend item
-        legendItem.appendChild(colorBox);
-        legendItem.appendChild(label);
-
-        // Append the legend item to the legend container
-        legendContainer.appendChild(legendItem);
-    }
-}
 
 // Function to create custom cluster icons with gradients and outline based on case type
 function createClusterIcon(cluster) {

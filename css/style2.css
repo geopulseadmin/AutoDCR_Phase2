@@ -4244,5 +4244,29 @@ border-radius: 5px 5px 5px 5px;
   font-size: 10px; /* Larger font for total projects */
  
 }
+#cluster_legend {
+  max-height: 200px; /* Set a fixed height */
+  overflow-y: auto;  /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: Add border for better visibility */
+  padding: 10px; /* Optional: Add padding */
+}
 
+/* WebKit browsers (Chrome, Safari) */
+#cluster_legend::-webkit-scrollbar {
+  width: 8px; /* Adjust scrollbar width */
+}
 
+#cluster_legend::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar thumb color */
+  border-radius: 4px; /* Rounded corners */
+}
+
+#cluster_legend::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Scrollbar thumb hover color */
+}
+
+/* Firefox */
+#cluster_legend {
+  scrollbar-width: thin; /* Set scrollbar width */
+
+}
