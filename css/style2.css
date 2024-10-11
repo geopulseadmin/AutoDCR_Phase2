@@ -1377,7 +1377,8 @@ day.selected.endRange, .flatpickr-day.startRange.endRange, .flatpickr-day.endRan
   left: 18px;
   overflow-x: hidden;
   overflow-y: hidden;
-  height: 61vh;
+  height: auto;
+  max-height: 64vh;
   border-radius: 12px;
   width: 290px;
   background-color: white;
@@ -4207,7 +4208,7 @@ border-radius: 5px 5px 5px 5px;
 .box{
   display: none;
   width: 280px;
-  height: 46vh;
+  height: auto;
   background-color: white;
   /* border: 1px solid #ccc; */
   padding: 10px;
