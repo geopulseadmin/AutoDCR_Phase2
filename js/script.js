@@ -1187,20 +1187,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 // Toggle arrow direction
-
 
 $(document).ready(function () {
   // date range code
@@ -1240,12 +1227,40 @@ $(document).ready(function () {
 
       DataTableFilter(cql_filter1);
       loadinitialData(cql_filter1); // Load the initial data
+      getCheckedValues(function (filterString) {
+        const mainfilter = combineFilters(cql_filter1, filterString);
+        console.log("Main Filterfor checking:", mainfilter);
+        FilterAndZoom(mainfilter);
+        fitbous(mainfilter)
+        DataTableFilter(mainfilter)
+      });
   }
 
   $('#calendarIcon').on('click', function () {
       $('#daterange').click();
   });
 
+  $('#daterange').on('apply.daterangepicker', function (ev, picker) {
+    var startDate = picker.startDate.format('YYYY-MM-DD');
+    var endDate = picker.endDate.format('YYYY-MM-DD');
+    console.log('Selected date range:', startDate, 'to', endDate);
+    cql_filter1 = `conc_appr_ >= '${startDate}' AND conc_appr_ < '${endDate}'`;
+    loadinitialData(cql_filter1);
+    const cql_filter = getCqlFilter();
+    getCheckedValues(function (filterString) {
+      const mainfilter = combineFilters(cql_filter1, filterString);
+      console.log("Main Filterfor checking:", mainfilter);
+      FilterAndZoom(mainfilter);
+      fitbous(mainfilter)
+      DataTableFilter(mainfilter);
+    });
+  });
+
+  // Function to get cql_filter1 value
+  function getCqlFilter() {
+    return cql_filter1;
+  }
+  
   // Function to load initial data
   function loadinitialData(cql_filter) {
       const url = `${main_url}AutoDCR/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=${layername}&outputFormat=application/json&cql_filter=${encodeURIComponent(cql_filter)}`;
