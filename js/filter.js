@@ -63,7 +63,7 @@ for (var caseType in caseTypeColors) {
         // Set darker outline for "New," "Revised," and "Others"
         if (caseType === "New" || caseType === "Revised" || caseType === "Others") {
             colorBox.style.border = "4px solid " + 
-                (caseType === "New" ? "darkred" : caseType === "Revised" ? "darkcyan" : "black");
+                (caseType === "New" ? "red" : caseType === "Revised" ? "darkcyan" : "black");
             colorBox.style.backgroundColor = "transparent"; // Make the background transparent
         } else {
             colorBox.style.backgroundColor = caseTypeColors[caseType]; // Use solid background for other types
