@@ -8,12 +8,9 @@ function toggleLayersControl() {
     controlContainer.style.display = controlContainer.style.display === 'none' ? 'block' : 'none';
   }
 }
-
-
 function toggleFilter(label) {
   const input = label.nextElementSibling; // Get the input element next to the label
   const ul = input.nextElementSibling; // Get the ul element next to the input
-
   // Toggle 'active' class for the clicked filter input and its associated ul  
   input.classList.toggle('active');
   ul.classList.toggle('active');
@@ -538,7 +535,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
   // Event listener for dropdown change
   $("#search_type").change(function () {
-    // alert("ooooooooooooo")
     var selectedValue = $(this).val();
     var selectedText = columns[selectedValue]; // Get corresponding label from columns object
     var input = document.getElementById("searchInputDashboard");
