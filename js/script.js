@@ -8,12 +8,9 @@ function toggleLayersControl() {
     controlContainer.style.display = controlContainer.style.display === 'none' ? 'block' : 'none';
   }
 }
-
-
 function toggleFilter(label) {
   const input = label.nextElementSibling; // Get the input element next to the label
   const ul = input.nextElementSibling; // Get the ul element next to the input
-
   // Toggle 'active' class for the clicked filter input and its associated ul  
   input.classList.toggle('active');
   ul.classList.toggle('active');
@@ -340,12 +337,216 @@ function fitbouss(filter) {
   });
 }
 // new code 18/9-----------------
-function showtable(typeName, geoServerURL, cqlFilter, headers, headerMapping) {
-  tableData(typeName, geoServerURL, cqlFilter, headers);
+// function showtable(typeName, geoServerURL, cqlFilter, headers, headerMapping) {
+//   tableData(typeName, geoServerURL, cqlFilter, headers);
 
+//   var currentPage = 1;
+//   var rowsPerPage = 10;
+//   var buttonsToShow = 3;
+
+//   function createTable(data, headers) {
+//     var tableContainer = document.getElementById('tablecontainer');
+//     if (!tableContainer) {
+//       console.error("Table container not found");
+//       return;
+//     }
+//     tableContainer.innerHTML = ""; // Clear any existing content
+
+//     var topContainer = document.createElement('div');
+//     topContainer.className = 'top-container';
+
+//     // Create minimize button
+//     var minimizeButton = document.createElement('button');
+//     minimizeButton.innerHTML = '<i class="fas fa-times"></i>'; // Set cross icon
+//     // minimizeButton.innerHTML = '<i class="fas fa-minus"></i>';
+//     minimizeButton.className = 'minimize-button';
+//     minimizeButton.addEventListener('click', function () {
+//       var tableDetail = document.querySelector('.tableDetail');
+//       if (tableDetail.style.display === 'none') {
+//         tableDetail.style.display = 'block';
+//         minimizeButton.innerHTML = '<i class="fas fa-times"></i>'; // Set cross icon
+//         document.getElementById('openTableBtn').style.display = 'none'; // Hide the show button
+//       } else {
+//         tableDetail.style.display = 'none';
+//         minimizeButton.style.display = 'none';
+//         document.getElementById('openTableBtn').style.display = 'block'; // Show the show button
+//       }
+//     });
+
+//     tableContainer.appendChild(minimizeButton);
+//     tableContainer.appendChild(topContainer);
+
+//     var tableDetail = document.createElement('div');
+//     tableDetail.className = 'tableDetail';
+//     tableContainer.appendChild(tableDetail);
+
+//     var table = document.createElement('table');
+//     table.className = 'data-table'; 
+//     table.id = 'data-table'; 
+
+//     var thead = document.createElement('thead');
+//     var headerRow = document.createElement('tr');
+
+//     headers.unshift('Sr_no'); // Add 'Serial No' as the first header
+
+//     // Create header cells using the headerMapping
+//     headers.forEach(header => {
+//       var th = document.createElement('th');
+//       var displayHeader = headerMapping[header] || header; // Get custom header or fallback to original
+//       th.textContent = displayHeader;
+//       headerRow.appendChild(th);
+//     });
+
+//     thead.appendChild(headerRow);
+//     table.appendChild(thead);
+
+//     var tbody = document.createElement('tbody');
+
+//     // Populate table rows with data
+//     data.forEach((item, index) => {
+//       var row = document.createElement('tr');
+
+//       // Add serial number as the first column
+//       var serialNumberCell = document.createElement('td');
+//       serialNumberCell.textContent = index + 1;
+//       row.appendChild(serialNumberCell);
+
+//       headers.slice(1).forEach(header => {
+//         var cell = document.createElement('td');
+//         cell.textContent = item[header] || ''; // Fill the cell with data
+//         row.appendChild(cell);
+//       });
+
+//       row.addEventListener('click', function () {
+//         var boundsLayer = L.geoJSON(item.geometry, {
+//           style: {
+//             fillColor: "blue",
+//             fillOpacity: 0.3,
+//             color: "blue",
+//             weight: 2,
+//           },
+//         }).addTo(map);
+
+//         var bounds = boundsLayer.getBounds();
+//         map.fitBounds(bounds);
+//         setTimeout(function () {
+//           map.removeLayer(boundsLayer);
+//         }, 5000);
+//       });
+
+//       tbody.appendChild(row);
+//     });
+
+//     table.appendChild(tbody);
+//     tableDetail.appendChild(table);
+
+//     $(document).ready(function () {
+//       if ($.fn.DataTable.isDataTable('#data-table')) {
+//         $('#data-table').DataTable().destroy(); 
+//       }
+//       $('#data-table').DataTable({
+//         paging: true,
+//         lengthChange: true,
+//         searching: true,
+//         ordering: true,
+//         info: true,
+//         autoWidth: false,
+//         scrollY: 400,
+//         scrollX: true,
+//         scrollCollapse: true,
+//         fixedHeader: true
+//       });
+//     });
+//   }
+
+
+  
+//   // Function to show the hidden table
+//   function showTable() {
+//     var tableDetail = document.querySelector('.tableDetail');
+//     var minimizeButton = document.querySelector('.minimize-button');
+//     tableDetail.style.display = 'block';
+//     minimizeButton.style.display = 'block';
+//     // minimizeButton.innerText = '-';
+//     document.getElementById('openTableBtn').style.display = 'none'; // Hide the show button
+//   }
+
+//   // Add event listener to the show table button
+//   document.getElementById('openTableBtn').addEventListener('click', showTable);
+
+
+//   function tableData(typeName, geoServerURL, cqlFilter, headers) {
+//     $.getJSON(geoServerURL, function (data) {
+//       var filteredData = data.features.map(feature => {
+//         let mappedData = {};
+//         headers.forEach(header => {
+//           mappedData[header] = feature.properties[header] || '';
+//         });
+//         mappedData.geometry = feature.geometry;
+//         return mappedData;
+//       });
+
+//       createTable(filteredData, headers);
+//     });
+//   }
+// }
+async function showtable(typeName, geoServerURL, cqlFilter, headers,headerMapping) {
+  tableData(typeName, geoServerURL, cqlFilter, headers,);
   var currentPage = 1;
   var rowsPerPage = 10;
   var buttonsToShow = 3;
+  function setupPagination(data, rowsPerPage, headers, tableContainer) {
+    var paginationContainer = document.createElement('div');
+    paginationContainer.id = 'pagination';
+    var pageCount = Math.ceil(data.length / rowsPerPage);
+    function renderPageButtons(startPage) {
+      paginationContainer.innerHTML = ""; // Clear any existing content
+      // Previous Button
+      var prevButton = document.createElement('button');
+      prevButton.innerText = 'Previous';
+      prevButton.disabled = currentPage === 1;
+      prevButton.addEventListener('click', function () {
+        if (currentPage > 1) {
+          currentPage--;
+          createTable(data, currentPage, rowsPerPage, headers);
+          renderPageButtons(Math.max(1, currentPage - Math.floor(buttonsToShow / 2)));
+        }
+      });
+      paginationContainer.appendChild(prevButton);
+      // Page Buttons
+      var endPage = Math.min(startPage + buttonsToShow - 1, pageCount);
+      for (var i = startPage; i <= endPage; i++) {
+        var pageButton = document.createElement('button');
+        pageButton.innerText = i;
+        if (i === currentPage) {
+          pageButton.classList.add('active');
+        }
+        pageButton.addEventListener('click', function (event) {
+          currentPage = Number(event.target.innerText);
+          createTable(data, currentPage, rowsPerPage, headers);
+          renderPageButtons(Math.max(1, currentPage - Math.floor(buttonsToShow / 2)));
+        });
+        paginationContainer.appendChild(pageButton);
+      }
+      // Next Button
+      var nextButton = document.createElement('button');
+      nextButton.innerText = 'Next';
+      nextButton.disabled = currentPage === pageCount;
+      nextButton.addEventListener('click', function () {
+        if (currentPage < pageCount) {
+          currentPage++;
+          createTable(data, currentPage, rowsPerPage, headers);
+          renderPageButtons(Math.max(1, currentPage - Math.floor(buttonsToShow / 2)));
+        }
+      });
+      paginationContainer.appendChild(nextButton);
+    }
+
+    renderPageButtons(1);
+    tableContainer.appendChild(paginationContainer); // Append paginationContainer after rendering buttons
+  }
+
+
 
   function createTable(data, headers) {
     var tableContainer = document.getElementById('tablecontainer');
@@ -354,61 +555,115 @@ function showtable(typeName, geoServerURL, cqlFilter, headers, headerMapping) {
       return;
     }
     tableContainer.innerHTML = ""; // Clear any existing content
+// Create the minimize button
+var minimizeButton = document.createElement('button');
+minimizeButton.innerHTML = '<i class="fas fa-times"></i>';
+minimizeButton.className = 'minimize-button';
 
-    var topContainer = document.createElement('div');
-    topContainer.className = 'top-container';
+// Add event listener for minimize button click
+minimizeButton.addEventListener('click', function (event) {
+  event.stopPropagation(); // Prevent the minimize button click from closing the box
 
-    // Create minimize button
-    var minimizeButton = document.createElement('button');
-    minimizeButton.innerHTML = '<i class="fas fa-times"></i>'; // Set cross icon
-    // minimizeButton.innerHTML = '<i class="fas fa-minus"></i>';
-    minimizeButton.className = 'minimize-button';
-    minimizeButton.addEventListener('click', function () {
-      var tableDetail = document.querySelector('.tableDetail');
-      if (tableDetail.style.display === 'none') {
-        tableDetail.style.display = 'block';
-        minimizeButton.innerHTML = '<i class="fas fa-times"></i>'; // Set cross icon
-        document.getElementById('openTableBtn').style.display = 'none'; // Hide the show button
-      } else {
-        tableDetail.style.display = 'none';
-        minimizeButton.style.display = 'none';
-        document.getElementById('openTableBtn').style.display = 'block'; // Show the show button
-      }
-    });
+  var tableDetail = document.querySelector('.tableDetail');
+  var clusterLegend = document.getElementById('cluster_legend');
 
-    tableContainer.appendChild(minimizeButton);
-    tableContainer.appendChild(topContainer);
+  if (tableDetail.style.display === 'none' || tableDetail.style.display === '') {
+    // Show table, hide cluster legend
+    tableDetail.style.display = 'block';
+    clusterLegend.style.display = 'none';
+    minimizeButton.innerHTML = '<i class="fas fa-times"></i>'; // Change icon for minimize
+    document.getElementById('openTableBtn').style.display = 'none'; // Hide the 'show' button
+  } else {
+    // Hide table, show cluster legend
+    tableDetail.style.display = 'none';
+    clusterLegend.style.display = 'block';
+    minimizeButton.style.display = 'none'; // Hide the minimize button if table is minimized
+    document.getElementById('openTableBtn').style.display = 'block'; // Show the 'show' button
+  }
+});
 
+// Append the minimize button to the table container
+var tableContainer = document.getElementById('tablecontainer'); // Ensure you have the table container
+tableContainer.appendChild(minimizeButton);
+
+// Add event listener for the toggleClusterLegend button
+document.getElementById('toggleClusterLegend').addEventListener('click', function (event) {
+  event.stopPropagation(); // Prevent the click from closing the box
+
+  var clusterLegend = document.getElementById('cluster_legend');
+  var tableDetail = document.querySelector('.tableDetail');
+
+  // If the legend is hidden, show it and hide the table
+  if (clusterLegend.style.display === 'none' || clusterLegend.style.display === '') {
+    clusterLegend.style.display = 'block'; // Show the legend
+    tableDetail.style.display = 'none'; // Hide the table
+    minimizeButton.style.display = 'none'; // Hide minimize button when legend is open
+    document.getElementById('openTableBtn').style.display = 'block'; // Show the 'open table' button
+  } else {
+    // If the legend is already visible, hide it
+    clusterLegend.style.display = 'none'; // Hide the legend
+  }
+});
+
+// Add event listener for the openTableBtn button
+document.getElementById('openTableBtn').addEventListener('click', function (event) {
+  event.stopPropagation(); // Prevent the click from closing the box
+
+  var tableDetail = document.querySelector('.tableDetail');
+  var clusterLegend = document.getElementById('cluster_legend');
+
+  // Show the table and hide the cluster legend
+  tableDetail.style.display = 'block';
+  clusterLegend.style.display = 'none';
+  minimizeButton.style.display = 'block'; // Show minimize button when the table is open
+  document.getElementById('openTableBtn').style.display = 'none'; // Hide the 'open table' button
+});
+
+
+    // Create tableDetail div
     var tableDetail = document.createElement('div');
     tableDetail.className = 'tableDetail';
     tableContainer.appendChild(tableDetail);
 
     var table = document.createElement('table');
-    table.className = 'data-table'; 
-    table.id = 'data-table'; 
+    table.className = 'data-table'; // Add a class for styling
+    table.id = 'data-table'; // Add an ID for DataTables initialization
 
     var thead = document.createElement('thead');
     var headerRow = document.createElement('tr');
 
-    headers.unshift('Sr_no'); // Add 'Serial No' as the first header
+    headers.unshift('Sr_no'); // Add serial number column
+    // Create header cells
+    // headers.forEach(headerText => {
+    //   var th = document.createElement('th');
+    //   th.textContent = headerText;
 
-    // Create header cells using the headerMapping
-    headers.forEach(header => {
-      var th = document.createElement('th');
-      var displayHeader = headerMapping[header] || header; // Get custom header or fallback to original
-      th.textContent = displayHeader;
-      headerRow.appendChild(th);
-    });
+    //   if (headerText === 'Name_of_Work') {
+    //     th.style.minWidth = '300px'; // Adjust as needed
+    //   }
+    //   headerRow.appendChild(th);
 
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
+
+    // });
+
+    // thead.appendChild(headerRow);
+    // table.appendChild(thead);
+
+        // Create header cells using the headerMapping
+        headers.forEach(header => {
+          var th = document.createElement('th');
+          var displayHeader = headerMapping[header] || header; // Get custom header or fallback to original
+          th.textContent = displayHeader;
+          headerRow.appendChild(th);
+        });
+    
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
 
     var tbody = document.createElement('tbody');
-
     // Populate table rows with data
     data.forEach((item, index) => {
       var row = document.createElement('tr');
-
       // Add serial number as the first column
       var serialNumberCell = document.createElement('td');
       serialNumberCell.textContent = index + 1;
@@ -416,22 +671,45 @@ function showtable(typeName, geoServerURL, cqlFilter, headers, headerMapping) {
 
       headers.slice(1).forEach(header => {
         var cell = document.createElement('td');
-        cell.textContent = item[header] || ''; // Fill the cell with data
+        if (header === 'entry_timestamp') {
+          let projectTime = item[header] ? moment(item[header]) : null;
+
+          if (projectTime && projectTime.isValid()) {
+            // Format the date for display
+            cell.textContent = projectTime.format('DD/MM/YYYY HH:mm');
+            // Store the raw date value for sorting
+            cell.setAttribute('data-sort', projectTime.toISOString());
+          } else {
+            // Handle invalid or missing dates
+            cell.textContent = 'N/A';
+            cell.setAttribute('data-sort', ''); // For empty sorting
+
+          }
+        } else {
+          cell.textContent = item[header] || ''; // Handle undefined values
+
+          if (header === 'Name_of_Work') {
+            cell.style.minWidth = '300px'; // Adjust as needed
+          }
+        }
         row.appendChild(cell);
       });
 
+      // Add click listener to highlight the geometry on the map
       row.addEventListener('click', function () {
         var boundsLayer = L.geoJSON(item.geometry, {
           style: {
-            fillColor: "blue",
-            fillOpacity: 0.3,
-            color: "blue",
-            weight: 2,
+            fillColor: "blue", // Fill color
+            fillOpacity: 0.3, // Fill opacity
+            color: "blue", // Border color
+            weight: 2, // Border weight
           },
-        }).addTo(map);
+        }).addTo(map); // Add the bounds layer to the map
 
         var bounds = boundsLayer.getBounds();
         map.fitBounds(bounds);
+
+        // Remove the bounds layer after 5 seconds
         setTimeout(function () {
           map.removeLayer(boundsLayer);
         }, 5000);
@@ -443,27 +721,39 @@ function showtable(typeName, geoServerURL, cqlFilter, headers, headerMapping) {
     table.appendChild(tbody);
     tableDetail.appendChild(table);
 
+    // Initialize DataTables after rendering the table
     $(document).ready(function () {
       if ($.fn.DataTable.isDataTable('#data-table')) {
-        $('#data-table').DataTable().destroy(); 
+        $('#data-table').DataTable().destroy(); // Destroy existing DataTable if initialized
       }
+
+      // Find the index of 'Project_Time'
+      const entry_timestampIndex = headers.indexOf('entry_timestamp');
+
       $('#data-table').DataTable({
-        paging: true,
-        lengthChange: true,
-        searching: true,
-        ordering: true,
-        info: true,
-        autoWidth: false,
+        paging: true, // Enable pagination
+        lengthChange: true, // Enable the 'Show X entries' dropdown
+        searching: true, // Enable search box
+        ordering: true, // Enable column sorting
+        info: true, // Enable showing 'Showing X of Y entries' info
+        autoWidth: false, // Disable auto width calculation
         scrollY: 400,
         scrollX: true,
         scrollCollapse: true,
-        fixedHeader: true
+        fixedHeader: true,
+        order: [[entry_timestampIndex, 'desc']], // Initial sort on the Project_Time column (latest first)
+        columnDefs: [
+          {
+            targets: entry_timestampIndex, // Ensure this matches the index of the Project_Time column
+            type: 'date', // Ensure DataTables treats this column as a date
+            orderData: [entry_timestampIndex], // Sort based on the raw date
+          }
+        ]
       });
     });
   }
 
 
-  
   // Function to show the hidden table
   function showTable() {
     var tableDetail = document.querySelector('.tableDetail');
@@ -478,22 +768,58 @@ function showtable(typeName, geoServerURL, cqlFilter, headers, headerMapping) {
   document.getElementById('openTableBtn').addEventListener('click', showTable);
 
 
+  // -------------------------------------------------------------
   function tableData(typeName, geoServerURL, cqlFilter, headers) {
     $.getJSON(geoServerURL, function (data) {
-      var filteredData = data.features.map(feature => {
-        let mappedData = {};
-        headers.forEach(header => {
-          mappedData[header] = feature.properties[header] || '';
-        });
-        mappedData.geometry = feature.geometry;
-        return mappedData;
-      });
+      var filteredData = data;
 
-      createTable(filteredData, headers);
+      const pid = [];
+
+      // Filter out features where PID is null
+      var exampleData = filteredData.features
+        .filter(feature => feature.properties.PID !== null) // Filter out null PIDs
+        .map(feature => {
+          let mappedData = {};
+          headers.forEach(header => {
+            // Convert header to camelCase or other naming convention if necessary
+            let propertyName = header.replace(/ /g, ''); // Remove spaces for property names
+            mappedData[propertyName] = feature.properties[header]; // Map property correctly
+          });
+          mappedData.geometry = feature.geometry;
+          pid.push(feature.properties.PID);
+
+          // Ensure geometry is included
+          return mappedData;
+        });
+
+      const uniquePIDs = new Set(pid);
+
+      // Update the table stats with the count of unique PIDs
+      // updateTableStats(`Total Projects:  ${uniquePIDs.size}`);
+
+      // console.log(exampleData,"before")
+      // Sort exampleData by Project_Time in descending order (latest first)
+      exampleData.sort((a, b) => {
+        // Access Project_Time using the mapped property name
+        let dateA = new Date(a.entry_timestamp); // Ensure this matches your header
+        let dateB = new Date(b.entry_timestamp
+        );
+
+        // Handle invalid dates
+        if (isNaN(dateA)) return 1; // Treat invalid dates as later
+        if (isNaN(dateB)) return -1; // Treat invalid dates as earlier
+
+        return dateB - dateA; // Sort in descending order
+      });
+      // console.log(exampleData,"after")
+
+      // Create the table with the sorted data
+      createTable(exampleData, headers);
     });
   }
-}
 
+
+};
 // new code 18/9-----------------
 $(document).ready(function () {
   // Handle click event on minimize-button
@@ -538,7 +864,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
   // Event listener for dropdown change
   $("#search_type").change(function () {
-    // alert("ooooooooooooo")
     var selectedValue = $(this).val();
     var selectedText = columns[selectedValue]; // Get corresponding label from columns object
     var input = document.getElementById("searchInputDashboard");
@@ -1538,7 +1863,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-// close the box and all 
+
+
+//close the filter abd button and legend close box 
 document.addEventListener('DOMContentLoaded', function () {
   const filters = document.getElementById('filters');
   const legendsDiv = document.querySelector('.legends');
@@ -1548,6 +1875,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const box = document.getElementById('box');
   const button = document.getElementById('Button');
   const closeBoxIcon = document.getElementById('closeBox');
+  const map = document.getElementById('map'); // Assuming your map container has the ID 'map'
+  const searchButton = document.getElementById('searchButton'); // Assuming searchButton has this ID
+  const calendarButton = document.getElementById('calendarButton'); // Assuming calendarButton has this ID
 
   // By default, open the box
   box.style.display = 'block'; // Ensure the box is open by default
@@ -1579,9 +1909,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Close box when clicking outside of it or outside the button
+  // Close box when clicking outside of it or outside the button (but not the map, searchButton, or calendarButton)
   document.addEventListener('click', function (event) {
-    if (!box.contains(event.target) && !button.contains(event.target)) {
+    // Exclude the box, button, map, searchButton, and calendarButton from triggering the close event
+    if (!box.contains(event.target) && !button.contains(event.target) && !map.contains(event.target)
+        && !searchButton.contains(event.target) && !calendarButton.contains(event.target)) {
       box.style.display = 'none';
     }
   });
@@ -1607,6 +1939,7 @@ document.addEventListener('DOMContentLoaded', function () {
     closeFilterAndLegend();
   });
 });
+
 
 
 //search bar 
