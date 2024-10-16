@@ -1371,14 +1371,14 @@ day.selected.endRange, .flatpickr-day.startRange.endRange, .flatpickr-day.endRan
 }
 
 .filters {
-  /* display: none;                    */
+  display: none;                    /* Hide the filter panel by default */
   position: absolute;
   top: 19%;
   left: 18px;
   overflow-x: hidden;
   overflow-y: hidden;
   height: auto;
-  max-height: 56vh;
+  max-height: 66vh;
   border-radius: 12px;
   width: 290px;
   background-color: white;
