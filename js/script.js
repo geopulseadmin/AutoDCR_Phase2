@@ -86,8 +86,6 @@ const cluster_url = "https://iwmsgis.pmc.gov.in/geoserver/";
   loadinitialData(filterString1);
   loadAndProcessGeoJSON(cluster_url, cluster_layerName, filterString1);
   getCheckedValues(function (filterString) {
-    // alert("opjojihu")
-    // //console.log("Filter Stringinside: ", filterString1);
     const mainfilter = combineFilters(filterString1, filterString);
     console.log("Filter Stringinsidedfgnjfhfufh: ", mainfilter);
     loadAndProcessGeoJSON(cluster_url, cluster_layerName, mainfilter);
@@ -161,13 +159,7 @@ function DataTableFilter(cql_filter1) {
   var headers = Object.keys(headerMapping);  // Pass keys from the mapping
   showtable(typeName, geoServerURL, cqlFilter, headers, headerMapping);  // Pass the mapping as well
 }
-
-
-// new code 18/9
-
-
 function populateDropdown(dropdownId, data) {
-
   var ul = $("#" + dropdownId);
   ul.empty();
   data.forEach(function (item) {
@@ -175,12 +167,7 @@ function populateDropdown(dropdownId, data) {
     var listItem = $('<li><label><input type="checkbox" class="select2-option-checkbox" value="' + item + '"> ' + item + '</label></li>');
     ul.append(listItem);
   });
-
-
 }
-
-
-
 function getCheckedValues(callback) {
   var selectedValues = {};
   const filternames = ["siteaddress_area", "caseinformation_applyfor", "caseinformation_casetype", "caseinformation_proposaltype","gut_no", "token", "caseinformation_grossplotarea","plotdetails_developmentzonedp", "ownerinformation_firstname"];
@@ -201,10 +188,8 @@ function getCheckedValues(callback) {
           values.push(actualValue);
         }
       });
-
-      
+  
       selectedValues[filtername] = values;
-
       var filters = [];
       var fovillagefilter =[]
       for (var key in selectedValues) {
@@ -214,10 +199,9 @@ function getCheckedValues(callback) {
             // alert(key)
             fovillagefilter.push(`${key} IN ('${selectedValues[key].join("','")}')`);
             var ff= `village_na IN ('${selectedValues[key].join("','")}')`
-            console.log(ff,"ffffffffffffffffffffffffffffffff")
+            // console.log(ff,"ffffffffffffffffffffffffffffffff")
             FilterAndZoomforvillage(ff)
           }
-          
           filters.push(`${key} IN ('${selectedValues[key].join("','")}')`);
           console.log(key,"forororroro")
         }
@@ -245,27 +229,18 @@ function FilterAndZoom(filter) {
     CQL_FILTER: filter,
     maxZoom: 19.5,
   }).addTo(map);
-  // Plot_Layout.setParams({
-  //   CQL_FILTER: filter,
-  //   maxZoom: 19.5,
-  // }).addTo(map);
 };
 
 function FilterAndZoomforvillage(filter) {
-  // fitbous(filter)
   Village_Boundary.setParams({
     CQL_FILTER: filter,
     maxZoom: 19.5,
     styles: 'Village_Highlight'
   }).addTo(map);
-
 };
-
-
 function fitbous(filter) {
   var layers = ["AutoDCR:Plot_Layout"];
   var bounds = null;
-
   var processLayer = function (layerName, callback) {
     var urlm =
       main_url + "ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" +
@@ -273,7 +248,6 @@ function fitbous(filter) {
       "&CQL_FILTER=" +
       filter +
       "&outputFormat=application/json";
-
     $.getJSON(urlm, function (data) {
       var geojson = L.geoJson(data);
       var layerBounds = geojson.getBounds();
@@ -303,7 +277,6 @@ function fitbous(filter) {
 function fitbouss(filter) {
   var layers = ["zone:Taluka_boundary"];
   var bounds = null;
-
   var processLayer = function (layerName, callback) {
     var urlm =
       main_url + "ows?service=WFS&version=1.0.0&request=GetFeature&typeName=" +
@@ -336,160 +309,7 @@ function fitbouss(filter) {
     });
   });
 }
-// new code 18/9-----------------
-// function showtable(typeName, geoServerURL, cqlFilter, headers, headerMapping) {
-//   tableData(typeName, geoServerURL, cqlFilter, headers);
 
-//   var currentPage = 1;
-//   var rowsPerPage = 10;
-//   var buttonsToShow = 3;
-
-//   function createTable(data, headers) {
-//     var tableContainer = document.getElementById('tablecontainer');
-//     if (!tableContainer) {
-//       console.error("Table container not found");
-//       return;
-//     }
-//     tableContainer.innerHTML = ""; // Clear any existing content
-
-//     var topContainer = document.createElement('div');
-//     topContainer.className = 'top-container';
-
-//     // Create minimize button
-//     var minimizeButton = document.createElement('button');
-//     minimizeButton.innerHTML = '<i class="fas fa-times"></i>'; // Set cross icon
-//     // minimizeButton.innerHTML = '<i class="fas fa-minus"></i>';
-//     minimizeButton.className = 'minimize-button';
-//     minimizeButton.addEventListener('click', function () {
-//       var tableDetail = document.querySelector('.tableDetail');
-//       if (tableDetail.style.display === 'none') {
-//         tableDetail.style.display = 'block';
-//         minimizeButton.innerHTML = '<i class="fas fa-times"></i>'; // Set cross icon
-//         document.getElementById('openTableBtn').style.display = 'none'; // Hide the show button
-//       } else {
-//         tableDetail.style.display = 'none';
-//         minimizeButton.style.display = 'none';
-//         document.getElementById('openTableBtn').style.display = 'block'; // Show the show button
-//       }
-//     });
-
-//     tableContainer.appendChild(minimizeButton);
-//     tableContainer.appendChild(topContainer);
-
-//     var tableDetail = document.createElement('div');
-//     tableDetail.className = 'tableDetail';
-//     tableContainer.appendChild(tableDetail);
-
-//     var table = document.createElement('table');
-//     table.className = 'data-table'; 
-//     table.id = 'data-table'; 
-
-//     var thead = document.createElement('thead');
-//     var headerRow = document.createElement('tr');
-
-//     headers.unshift('Sr_no'); // Add 'Serial No' as the first header
-
-//     // Create header cells using the headerMapping
-//     headers.forEach(header => {
-//       var th = document.createElement('th');
-//       var displayHeader = headerMapping[header] || header; // Get custom header or fallback to original
-//       th.textContent = displayHeader;
-//       headerRow.appendChild(th);
-//     });
-
-//     thead.appendChild(headerRow);
-//     table.appendChild(thead);
-
-//     var tbody = document.createElement('tbody');
-
-//     // Populate table rows with data
-//     data.forEach((item, index) => {
-//       var row = document.createElement('tr');
-
-//       // Add serial number as the first column
-//       var serialNumberCell = document.createElement('td');
-//       serialNumberCell.textContent = index + 1;
-//       row.appendChild(serialNumberCell);
-
-//       headers.slice(1).forEach(header => {
-//         var cell = document.createElement('td');
-//         cell.textContent = item[header] || ''; // Fill the cell with data
-//         row.appendChild(cell);
-//       });
-
-//       row.addEventListener('click', function () {
-//         var boundsLayer = L.geoJSON(item.geometry, {
-//           style: {
-//             fillColor: "blue",
-//             fillOpacity: 0.3,
-//             color: "blue",
-//             weight: 2,
-//           },
-//         }).addTo(map);
-
-//         var bounds = boundsLayer.getBounds();
-//         map.fitBounds(bounds);
-//         setTimeout(function () {
-//           map.removeLayer(boundsLayer);
-//         }, 5000);
-//       });
-
-//       tbody.appendChild(row);
-//     });
-
-//     table.appendChild(tbody);
-//     tableDetail.appendChild(table);
-
-//     $(document).ready(function () {
-//       if ($.fn.DataTable.isDataTable('#data-table')) {
-//         $('#data-table').DataTable().destroy(); 
-//       }
-//       $('#data-table').DataTable({
-//         paging: true,
-//         lengthChange: true,
-//         searching: true,
-//         ordering: true,
-//         info: true,
-//         autoWidth: false,
-//         scrollY: 400,
-//         scrollX: true,
-//         scrollCollapse: true,
-//         fixedHeader: true
-//       });
-//     });
-//   }
-
-
-  
-//   // Function to show the hidden table
-//   function showTable() {
-//     var tableDetail = document.querySelector('.tableDetail');
-//     var minimizeButton = document.querySelector('.minimize-button');
-//     tableDetail.style.display = 'block';
-//     minimizeButton.style.display = 'block';
-//     // minimizeButton.innerText = '-';
-//     document.getElementById('openTableBtn').style.display = 'none'; // Hide the show button
-//   }
-
-//   // Add event listener to the show table button
-//   document.getElementById('openTableBtn').addEventListener('click', showTable);
-
-
-//   function tableData(typeName, geoServerURL, cqlFilter, headers) {
-//     $.getJSON(geoServerURL, function (data) {
-//       var filteredData = data.features.map(feature => {
-//         let mappedData = {};
-//         headers.forEach(header => {
-//           mappedData[header] = feature.properties[header] || '';
-//         });
-//         mappedData.geometry = feature.geometry;
-//         return mappedData;
-//       });
-
-//       createTable(filteredData, headers);
-//     });
-//   }
-// }
 async function showtable(typeName, geoServerURL, cqlFilter, headers,headerMapping) {
   tableData(typeName, geoServerURL, cqlFilter, headers,);
   var currentPage = 1;
@@ -541,7 +361,6 @@ async function showtable(typeName, geoServerURL, cqlFilter, headers,headerMappin
       });
       paginationContainer.appendChild(nextButton);
     }
-
     renderPageButtons(1);
     tableContainer.appendChild(paginationContainer); // Append paginationContainer after rendering buttons
   }
@@ -793,11 +612,6 @@ document.getElementById('openTableBtn').addEventListener('click', function (even
         });
 
       const uniquePIDs = new Set(pid);
-
-      // Update the table stats with the count of unique PIDs
-      // updateTableStats(`Total Projects:  ${uniquePIDs.size}`);
-
-      // console.log(exampleData,"before")
       // Sort exampleData by Project_Time in descending order (latest first)
       exampleData.sort((a, b) => {
         // Access Project_Time using the mapped property name

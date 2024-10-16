@@ -4262,7 +4262,7 @@ border-radius: 5px 5px 5px 5px;
 }
 
 .blinking-border {
-  animation: blinkBorder 2s ease-in-out infinite; /* 1-second blink duration */
+  animation: blinkBorder 2.5s ease-in-out infinite; /* 1-second blink duration */
 }
 
 /* Ensure all marker icons use the CSS variable for border-color */
