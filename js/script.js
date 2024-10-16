@@ -1148,7 +1148,6 @@ async function handleMapRightClick(e) {
     }
   }
 }
-
 // Function to update the popup position
 function updatePopupPosition(e) {
   let modal = document.getElementById("infoModal");
@@ -1179,6 +1178,14 @@ function closeModal() {
   isModalOpen = false; // Mark the modal as closed
 }
 
+// Function to handle clicks or mouse moves
+function handleMouseEvent(event) {
+  const modal = document.getElementById("infoModal");
+  if (isModalOpen && modal && !modal.contains(event.target)) {
+    closeModal(); // Close the modal if it's open and the click is outside the modal
+  }
+}
+
 // Event listener for right-click on map (contextmenu event)
 map.on("contextmenu", (e) => {
   lastClickEvent = e;
@@ -1193,7 +1200,9 @@ map.on("move", () => {
 // Store the last right-click event to use when the map moves
 let lastClickEvent;
 
-
+// Add event listeners for click and mousemove to close the modal
+document.addEventListener("click", handleMouseEvent);
+document.addEventListener("mousemove", handleMouseEvent);
 
 // script2.js
 
