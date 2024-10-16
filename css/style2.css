@@ -2024,7 +2024,7 @@ body {
 .right-icons3 {
   align-self: stretch;
   border-radius: 12px;
-  background-color: #fff;
+
   height: 40px;
   overflow: hidden;
   flex-shrink: 0;
@@ -3895,18 +3895,12 @@ transition: filter 0.3s; /* Smooth transition for icon color change */
 }
 
 /* Hover state styles - applied when hovering */
-.component-11:hover .right-icons3 {
+/* .component-11:hover .right-icons3 {
 background: linear-gradient(180deg, #0077DA 0%, #54A4E6 100%); /* Hover effect color */
-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+/* box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
 border-radius: 12px;
-}
+} */ */
 
-/* Active state styles - applied when clicked */
-.component-11.active .right-icons3 {
-background: linear-gradient(180deg, #0077DA 0%, #54A4E6 100%); /* Desired click color */
-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
-border-radius: 12px;
-}
 
 /* Active state icon color */
 .component-11.active img {
@@ -4321,4 +4315,16 @@ border-radius: 5px 5px 5px 5px;
 /* Remove red color when inactive */
 .inactive {
   background-color: transparent;
+}
+.status {
+  padding: 5px 5px;
+  cursor: pointer;
+  background-color: lightgray; /* Default background color */
+  border-radius: 5px;/* Optional border */
+}
+
+.status.active {
+  background: linear-gradient(180deg, #0077DA 0%, #54A4E6 100%);
+
+  color: white; /* Text color for active tab */
 }

@@ -1118,9 +1118,29 @@ document.querySelector(".component-6").addEventListener("click", function () {
 
 
 
+// Select all the tabs
+const tabs = document.querySelectorAll('.tab .status');
 
+// Function to handle tab clicks
+function setActiveTab(activeTab) {
+    // Remove active class from all tabs
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
 
-//move the north arrow container 
+    // Add active class to the clicked tab
+    if (activeTab) {
+        activeTab.classList.add('active');
+    }
+}
+
+// Add click event listeners to each tab
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        setActiveTab(tab); // Set the clicked tab as active
+    });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   const statusElement = document.querySelector('.status');
   const dataGraphsElement = document.querySelector('.data-graphs');
@@ -1132,7 +1152,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const northArrowContainer = document.querySelector('.north-arrow-container');
   const closeLegendButton = document.getElementById('closeLegendButton');
   const summaryCloseIcon = document.querySelector('.summary-close');
-  const toggleButtons = document.querySelectorAll('.toggle-button'); // Select all toggle-button elements
+  const toggleButtons = document.querySelectorAll('.toggle-button');
+  const analyticsButton = document.getElementById('analyticsButton');
+  const box = document.getElementById('box');
+  const button = document.getElementById('Button');
+  const closeBoxIcon = document.getElementById('closeBox');
+  const map = document.getElementById('map');
+  const searchButton = document.getElementById('searchButton');
+  const calendarButton = document.getElementById('calendarButton');
+
+  // Set the box to be visible by default
+  box.style.display = 'block';
+  button.classList.add('active');
 
   setTimeout(() => {
     const scaleControlElement = document.querySelector('.leaflet-control-scale');
@@ -1164,21 +1195,49 @@ document.addEventListener('DOMContentLoaded', function () {
       moveScaleControlRight();
     }
 
+    function setActive(buttonToActivate) {
+      // Remove active class from all buttons
+      toggleButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.remove('active');
+      // Add active class to the clicked button
+      buttonToActivate.classList.add('active');
+    }
+
+    function removeLegendColors() {
+      const legendItems = legendsDiv.querySelectorAll('.legend-item');
+      legendItems.forEach(item => item.classList.remove('active-color'));
+    }
+
+    function removeFilterColors() {
+      const filterItems = filters.querySelectorAll('.filter-item');
+      filterItems.forEach(item => item.classList.remove('active-color'));
+    }
+
+    // Change color of compounds based on filter selection
+    function changeCompoundColor(selectedCompound) {
+      const compounds = document.querySelectorAll('.component'); // Adjust selector as necessary
+      compounds.forEach(compound => {
+        compound.classList.remove('active'); // Remove active from all
+      });
+      selectedCompound.classList.add('active'); // Add active to the selected
+    }
+
+    // Handle status click (shows data graphs)
     statusElement.addEventListener('click', function () {
-      if (dataGraphsElement.style.display === 'none' || dataGraphsElement.style.display === '') {
-        closeAllSections();
-        dataGraphsElement.style.display = 'block';
-        moveMapSectionRight();
-      } else {
-        closeAllSections();
-      }
+      closeAllSections();
+      dataGraphsElement.style.display = 'block';
+      moveMapSectionRight();
+      setActive(statusElement);
     });
 
+    // Handle legend toggle
     toggleButton.addEventListener('click', function () {
       if (legendsDiv.classList.contains('hidden')) {
         closeAllSections();
         legendsDiv.classList.remove('hidden');
         moveMapSectionRight();
+        setActive(toggleButton);
+        removeFilterColors();
       } else {
         closeAllSections();
       }
@@ -1190,20 +1249,15 @@ document.addEventListener('DOMContentLoaded', function () {
       northArrowContainer.classList.remove('move-right');
     });
 
+    // Handle filter toggle
     toggleFiltersButton.addEventListener('click', function () {
-      if (filters.style.display === 'none' || filters.style.display === '') {
-        closeAllSections();
-        filters.style.display = 'block';
-        filters.style.opacity = '1';
-        filters.style.visibility = 'visible';
-        moveMapSectionRight();
-      } else {
-        closeAllSections();
-      }
-    });
-
-    filters.addEventListener('click', function (event) {
-      event.stopPropagation();
+      closeAllSections();
+      filters.style.display = 'block';
+      filters.style.opacity = '1';
+      filters.style.visibility = 'visible';
+      moveMapSectionRight();
+      setActive(toggleFiltersButton);
+      removeLegendColors();
     });
 
     filterCloseIcon.addEventListener('click', function () {
@@ -1211,21 +1265,85 @@ document.addEventListener('DOMContentLoaded', function () {
       filters.style.visibility = 'hidden';
       resetScaleControlPosition();
       northArrowContainer.classList.remove('move-right');
-
       setTimeout(() => {
         filters.style.display = 'none';
       }, 300);
     });
 
-    // Add event listener for closing the data-graphs section
     summaryCloseIcon.addEventListener('click', function () {
+      closeAllSections();
+    });
+
+    // Add event listener for Compound 11
+    const compound11 = document.querySelector('.component-11'); // Adjust selector as necessary
+    if (compound11) {
+      compound11.addEventListener('click', function () {
+        changeCompoundColor(compound11);
+      });
+    }
+
+    // Add event listeners for each filter item
+    const filterItems = filters.querySelectorAll('.filter-item'); // Adjust selector as necessary
+    filterItems.forEach(item => {
+      item.addEventListener('click', function () {
+        const targetCompoundId = item.dataset.target; // Assuming each filter has a data attribute
+        const targetCompound = document.getElementById(targetCompoundId); // Get the corresponding compound
+        if (targetCompound) {
+          changeCompoundColor(targetCompound); // Change the color of the target compound
+        }
+        removeLegendColors(); // Remove legend colors when filter is clicked
+      });
+    });
+
+    // Handle box toggle
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      closeAllSections(); // Close all sections when box is opened
+      box.style.display = box.style.display === 'block' ? 'none' : 'block';
+      setActive(button);
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!box.contains(event.target) && !button.contains(event.target) &&
+          !map.contains(event.target) && !searchButton.contains(event.target) && !calendarButton.contains(event.target)) {
+        box.style.display = 'none';
+      }
+    });
+
+    closeBoxIcon.addEventListener('click', function () {
+      box.style.display = 'none';
+    });
+
+    analyticsButton.addEventListener('click', function () {
       closeAllSections();
     });
   }, 100);
 });
+// // Select the necessary components
+const toggleFilters = document.getElementById('toggleFilters');
+const toggleButton = document.getElementById('toggleButton');
+const toggleButton1 = document.getElementById('toggleButton1'); // Ensure this element exists in your HTML
+const button = document.getElementById('Button');
 
-// $(document).ready(function () {
-// // date range code
+// Function to change active state
+function setActiveComponent(activeComponent) {
+    // Remove active class (and background color) from all components
+    [toggleFilters, toggleButton, button, toggleButton1].forEach(component => {
+        component.classList.remove('active');
+    });
+
+    // Add active class (and background color) to the clicked component
+    if (activeComponent) {
+        activeComponent.classList.add('active');
+    }
+}
+
+// Event listeners for each component
+toggleFilters.addEventListener('click', () => setActiveComponent(toggleFilters));
+toggleButton.addEventListener('click', () => setActiveComponent(toggleButton));
+button.addEventListener('click', () => setActiveComponent(button));
+toggleButton1.addEventListener('click', () => setActiveComponent(toggleButton1));
+
 // // Example usage of the function
 // const layername = "AutoDCR:plot1_layout_test";
 // const main_url = "https://iwmsgis.pmc.gov.in/geoserver/";
@@ -1738,80 +1856,80 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-//close the filter abd button and legend close box 
-document.addEventListener('DOMContentLoaded', function () {
-  const filters = document.getElementById('filters');
-  const legendsDiv = document.querySelector('.legends');
-  const northArrowContainer = document.querySelector('.north-arrow-container');
-  const scaleControlElement = document.querySelector('.leaflet-control-scale');
-  const analyticsButton = document.getElementById('analyticsButton');
-  const box = document.getElementById('box');
-  const button = document.getElementById('Button');
-  const closeBoxIcon = document.getElementById('closeBox');
-  const map = document.getElementById('map'); // Assuming your map container has the ID 'map'
-  const searchButton = document.getElementById('searchButton'); // Assuming searchButton has this ID
-  const calendarButton = document.getElementById('calendarButton'); // Assuming calendarButton has this ID
+// //close the filter abd button and legend close box 
+// document.addEventListener('DOMContentLoaded', function () {
+//   const filters = document.getElementById('filters');
+//   const legendsDiv = document.querySelector('.legends');
+//   const northArrowContainer = document.querySelector('.north-arrow-container');
+//   const scaleControlElement = document.querySelector('.leaflet-control-scale');
+//   const analyticsButton = document.getElementById('analyticsButton');
+//   const box = document.getElementById('box');
+//   const button = document.getElementById('Button');
+//   const closeBoxIcon = document.getElementById('closeBox');
+//   const map = document.getElementById('map'); // Assuming your map container has the ID 'map'
+//   const searchButton = document.getElementById('searchButton'); // Assuming searchButton has this ID
+//   const calendarButton = document.getElementById('calendarButton'); // Assuming calendarButton has this ID
 
-  // By default, open the box
-  box.style.display = 'block'; // Ensure the box is open by default
+//   // By default, open the box
+//   box.style.display = 'block'; // Ensure the box is open by default
 
-  function closeFilterAndLegend() {
-    console.log('Closing filter and legend'); 
+//   function closeFilterAndLegend() {
+//     console.log('Closing filter and legend'); 
 
-    filters.style.display = 'none';
-    legendsDiv.classList.add('hidden');
-    resetScaleControlPosition();
-    northArrowContainer.classList.remove('move-right');
-  }
+//     filters.style.display = 'none';
+//     legendsDiv.classList.add('hidden');
+//     resetScaleControlPosition();
+//     northArrowContainer.classList.remove('move-right');
+//   }
 
-  function resetScaleControlPosition() {
-    if (scaleControlElement) {
-      scaleControlElement.classList.remove('move-right');
-    }
-  }
+//   function resetScaleControlPosition() {
+//     if (scaleControlElement) {
+//       scaleControlElement.classList.remove('move-right');
+//     }
+//   }
 
-  // Toggle box visibility below the button
-  button.addEventListener('click', function (event) {
-    event.stopPropagation(); // Prevent the document click from immediately hiding the box
-    const buttonRect = button.getBoundingClientRect();
+//   // Toggle box visibility below the button
+//   button.addEventListener('click', function (event) {
+//     event.stopPropagation(); // Prevent the document click from immediately hiding the box
+//     const buttonRect = button.getBoundingClientRect();
 
-    if (box.style.display === 'none' || box.style.display === '') {
-      box.style.display = 'block';
-    } else {
-      box.style.display = 'none';
-    }
-  });
+//     if (box.style.display === 'none' || box.style.display === '') {
+//       box.style.display = 'block';
+//     } else {
+//       box.style.display = 'none';
+//     }
+//   });
 
-  // Close box when clicking outside of it or outside the button (but not the map, searchButton, or calendarButton)
-  document.addEventListener('click', function (event) {
-    // Exclude the box, button, map, searchButton, and calendarButton from triggering the close event
-    if (!box.contains(event.target) && !button.contains(event.target) && !map.contains(event.target)
-        && !searchButton.contains(event.target) && !calendarButton.contains(event.target)) {
-      box.style.display = 'none';
-    }
-  });
+//   // Close box when clicking outside of it or outside the button (but not the map, searchButton, or calendarButton)
+//   document.addEventListener('click', function (event) {
+//     // Exclude the box, button, map, searchButton, and calendarButton from triggering the close event
+//     if (!box.contains(event.target) && !button.contains(event.target) && !map.contains(event.target)
+//         && !searchButton.contains(event.target) && !calendarButton.contains(event.target)) {
+//       box.style.display = 'none';
+//     }
+//   });
 
-  // Close the box when the close icon is clicked
-  closeBoxIcon.addEventListener('click', function () {
-    box.style.display = 'none';
-  });
+//   // Close the box when the close icon is clicked
+//   closeBoxIcon.addEventListener('click', function () {
+//     box.style.display = 'none';
+//   });
 
-  document.querySelectorAll('.component-10').forEach(function (element) {
-    element.addEventListener('click', function () {
-      closeFilterAndLegend();
-    });
-  });
+//   document.querySelectorAll('.component-10').forEach(function (element) {
+//     element.addEventListener('click', function () {
+//       closeFilterAndLegend();
+//     });
+//   });
 
-  document.querySelectorAll('.component-11').forEach(function (element) {
-    element.addEventListener('click', function () {
-      closeFilterAndLegend();
-    });
-  });
+//   document.querySelectorAll('.component-11').forEach(function (element) {
+//     element.addEventListener('click', function () {
+//       closeFilterAndLegend();
+//     });
+//   });
 
-  analyticsButton.addEventListener('click', function () {
-    closeFilterAndLegend();
-  });
-});
+//   analyticsButton.addEventListener('click', function () {
+//     closeFilterAndLegend();
+//   });
+// });
 
 
 
