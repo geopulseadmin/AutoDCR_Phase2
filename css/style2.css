@@ -1371,14 +1371,14 @@ day.selected.endRange, .flatpickr-day.startRange.endRange, .flatpickr-day.endRan
 }
 
 .filters {
-  display: none;                    /* Hide the filter panel by default */
+  /* display: none;                    */
   position: absolute;
   top: 19%;
   left: 18px;
   overflow-x: hidden;
   overflow-y: hidden;
   height: auto;
-  max-height: 64vh;
+  /* max-height: 66vh; */
   border-radius: 12px;
   width: 290px;
   background-color: white;
@@ -1523,7 +1523,7 @@ color: black;
 #tablecontainer {
   z-index: 9999;
   position: absolute;
-  width: 30%;
+  width: 35%;
   bottom: 4%;
   /* max-height: 350px; */
   right: 4%;
@@ -3635,14 +3635,26 @@ body {
 
 
 /* Style for the container div */
-
+/* 
 .tablestats {
 margin-top: 5px;
 
 color: #262626;
 font-weight: bold;
 text-shadow: black;
-}
+} */
+
+.tablestats {
+  /* color: #04c; */
+  
+  font-size: 0%;
+  color: #262626;
+  font-weight: bold;
+  text-shadow: black;
+  /* text-transform: uppercase; */
+  
+  /* position: fixed; color: darkblue; font-size: 12px;font-weight: bold;  z-index: 9999; margin-top: 45px; margin-left:0px; */
+  }
 .stat-button {
 display: flex;
 justify-content: space-between;
@@ -4297,3 +4309,16 @@ border-radius: 5px 5px 5px 5px;
 
 }
 
+/* Target the table header cells */
+.data-table thead th {
+  height: 10px; /* Set the header height */
+  line-height: 10px; /* Ensure text inside aligns properly */
+  padding: 0; /* Remove any padding for exact height */
+  vertical-align: middle; /* Align text vertically to the middle */
+} 
+
+
+/* Remove red color when inactive */
+.inactive {
+  background-color: transparent;
+}

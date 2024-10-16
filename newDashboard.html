@@ -82,6 +82,14 @@
               <!-- <img src="image/searchfilter.svg"> -->
               <ul class="select2  abcscroll" multiple="multiple" id="siteaddress_area"></ul>
             </div>
+            <div class="filter-group">
+              <label for="caseinformation_proposaltype" onclick="toggleFilter(this)">Proposal Type<span
+                  class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
+                  class="selected-count"></span></label>
+              <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
+              <ul class="select2 " multiple="multiple" id="caseinformation_proposaltype"></ul>
+            </div>
+
             <!-- <div class="filter-group">
               <label for="gut_no" onclick="toggleFilter(this)">Survey No <span class="icon-container"><i
                     class="fa-solid fa-angle-down"></i></span><span class="selected-count"></span></label>
@@ -111,14 +119,7 @@
               <ul class="select2 " multiple="multiple" id="caseinformation_casetype"></ul>
             </div>
             
-            <div class="filter-group">
-              <label for="caseinformation_proposaltype" onclick="toggleFilter(this)">Proposal Type<span
-                  class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
-                  class="selected-count"></span></label>
-              <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
-              <ul class="select2 " multiple="multiple" id="caseinformation_proposaltype"></ul>
-            </div>
-
+            
             <div class="filter-group">
               <label for="caseinformation_grossplotarea" onclick="toggleFilter(this)">Gross Plot Area <span
                   class="icon-container"><i class="fa-solid fa-angle-down"></i></span><span
@@ -133,12 +134,21 @@
               <input type="text" placeholder="Search" class="filter-input" id="typeSearch">
               <ul class="select2   abcscroll p-1" multiple="multiple" id="plotdetails_developmentzonedp"></ul>
             </div>
-
+            
+            <div class="stat-button">
+              <div class="stat-label">Total Count:</div>
+              <div class="stat-value" id=""></div>
+            </div>
           </div>
 
-          <div class="showCount">
+          <!-- <div class="showCount">
             <h5 class="tablestats" id="tablestats" style="font-size: large;"> </h5>
-          </div>
+          </div> -->
+
+          <!-- <div class="stat-button">
+            <div class="stat-label">Total Count:</div>
+            <div class="stat-value" id=""></div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -411,8 +421,9 @@
   </button>
 
   <div id="cluster_legend" class="cluster_legend hidden ">
-    <div class="cluster_legend-title">Cluster Legend</div>
-    <hr>
+    <div class="cluster_legend-title">Proposal Types
+</div>
+    <!-- <hr> -->
   </div>
 
   <a href="https://geopulsea.com/" class="geopulseaname">@GeoPulse Analytics</a>
@@ -424,14 +435,15 @@
 
   <div class="tab-section">
     <div class="tab-main">
-      <div class="component-6" id="analyticsButton">
-        <img class="chart-fill-icon" alt="" src="image/Chart_fill.svg" />
-        <div class="analytics">Analytics</div>
-      </div>
       <div class="component-7" id="optionsButton">
         <img class="ui-iconbookmarklight" alt="" src="image/light.svg" />
         <div class="analytics">Options</div>
       </div>
+      <div class="component-6" id="analyticsButton">
+        <img class="chart-fill-icon" alt="" src="image/Chart_fill.svg" />
+        <div class="analytics">Attributes</div>
+      </div>
+     
     </div>
 
     <!-- Options Content (Initially Hidden) -->
@@ -440,9 +452,9 @@
         <!-- This is the existing component with the icon -->
 
         <div class="component-10" id="toggleFilters">
-
-          <img class="right-icons" src="image/filter.svg" alt="Search Icon" id="search-icon">
-          </button>
+      
+          <img class="right-icons" src="image/filter.svg" alt="Search Icon" id="filter-icon"">
+  
           <div class="component-10-child"></div>
         </div>
 
@@ -460,7 +472,9 @@
         
         <div id="box" class="box">
           <span id="closeBox" class="box-icon">&times;</span>
+          
           <div id="box-content">Loading proposal type and project count...</div>
+          
         </div>
 
         

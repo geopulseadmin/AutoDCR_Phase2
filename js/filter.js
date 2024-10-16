@@ -1,4 +1,3 @@
-// cluster 
 var proposaltype = {};
 // Define gradient colors for each caseinformation_proposaltype
 var caseinformation_proposaltypeColors = {
@@ -14,8 +13,6 @@ var caseinformation_proposaltypeColors = {
 };
 
 // Define colors for case types (new or revised)
-// Define colors for case types (new or revised)
-// Define colors for case types (new or revised)
 var caseTypeColors = {
     "New": "red",
     "Revised": "#40E0D0",
@@ -25,18 +22,24 @@ var caseTypeColors = {
 // Get the legend container
 var legendContainer = document.getElementById('cluster_legend');
 
-// Loop through the proposal type colors and create the legend items
+// Loop through the proposal type colors and create the legend items (without a heading)
 for (var caseinformation_proposaltype in caseinformation_proposaltypeColors) {
     if (caseinformation_proposaltypeColors.hasOwnProperty(caseinformation_proposaltype)) {
         var legendItem = document.createElement('div');
         legendItem.className = 'cluster_legend-item';
+        legendItem.style.margin = "0"; // Remove margin
+        legendItem.style.padding = "2px 0"; // Adjust padding
 
         var colorBox = document.createElement('div');
         colorBox.className = 'cluster_legend-color';
         colorBox.style.backgroundColor = caseinformation_proposaltypeColors[caseinformation_proposaltype];
+        colorBox.style.width = "20px"; // Set width for uniformity
+        colorBox.style.height = "20px"; // Set height for uniformity
+        colorBox.style.display = "inline-block"; // Ensure alignment
 
         var label = document.createElement('span');
         label.textContent = caseinformation_proposaltype;
+        label.style.marginLeft = "5px"; // Adjust spacing between color box and label
 
         legendItem.appendChild(colorBox);
         legendItem.appendChild(label);
@@ -48,41 +51,43 @@ for (var caseinformation_proposaltype in caseinformation_proposaltypeColors) {
 var groupedCaseTypes = document.createElement('div');
 groupedCaseTypes.className = 'cluster_legend-group'; // Optional: add a class for styling
 
+// Create a heading for case types
+var caseTypeHeading = document.createElement('h6');
+caseTypeHeading.textContent = "Case Types"; // Set your desired heading
+caseTypeHeading.style.color = "black"; // Set heading color to black
+caseTypeHeading.style.fontWeight = "bold"; 
+caseTypeHeading.style.marginTop = "8px"; // Add margin top of 8px
+groupedCaseTypes.appendChild(caseTypeHeading);
+
 // Loop through the case type colors and create the legend items
 for (var caseType in caseTypeColors) {
     if (caseTypeColors.hasOwnProperty(caseType)) {
         var legendItem = document.createElement('div');
         legendItem.className = 'cluster_legend-item';
+        legendItem.style.margin = "0"; // Remove margin
+        legendItem.style.padding = "2px 0"; // Adjust padding
 
         var colorBox = document.createElement('div');
         colorBox.className = 'cluster_legend-color';
         colorBox.style.width = "20px";
         colorBox.style.height = "20px";
         colorBox.style.display = "inline-block";
-
-        // Set darker outline for "New," "Revised," and "Others"
-        if (caseType === "New" || caseType === "Revised" || caseType === "Others") {
-            colorBox.style.border = "4px solid " + 
-                (caseType === "New" ? "red" : caseType === "Revised" ? "darkcyan" : "black");
-            colorBox.style.backgroundColor = "transparent"; // Make the background transparent
-        } else {
-            colorBox.style.backgroundColor = caseTypeColors[caseType]; // Use solid background for other types
-        }
+        colorBox.style.border = "4px solid " + 
+            (caseType === "New" ? "red" : caseType === "Revised" ? "darkcyan" : "black");
+        colorBox.style.backgroundColor = "transparent"; // Make the background transparent
 
         var label = document.createElement('span');
         label.textContent = caseType;
+        label.style.marginLeft = "5px"; // Adjust spacing between color box and text
 
         legendItem.appendChild(colorBox);
         legendItem.appendChild(label);
-        groupedCaseTypes.appendChild(legendItem); // Append to the wrapper
+        groupedCaseTypes.appendChild(legendItem);
     }
 }
 
 // Append grouped case types to the legend container
 legendContainer.appendChild(groupedCaseTypes);
-
-
-
 
 
 // Function to create custom cluster icons with gradients and outline based on case type

@@ -67,9 +67,74 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+
+
+  // Ensure zoom control doesn't move
+  const zoomControl = document.querySelector('.leaflet-control-zoom');
+  if (zoomControl) {
+    zoomControl.style.position = 'fixed';
+  }
+
+
+
 function updateTableStats(stats) {
   document.getElementById('tablestats').innerText = stats;
 }
+
+
+//------------------------------------------------------------------------------
+function tableData(typeName, geoServerURL, cqlFilter, headers) {
+  $.getJSON(geoServerURL, function (data) {
+    var filteredData = data;
+    if (!data || !data.features) {
+      console.error("No data received or features not available");
+      return;
+  }
+  
+
+    const work_id = [];
+    var exampleData = filteredData.features.map(feature => {
+      let mappedData = {};
+      headers.forEach(header => {
+        // Convert header to camelCase or other naming convention if necessary
+        let propertyName = header.replace(/ /g, '');
+        if (header === 'id') {
+          mappedData[propertyName] = (feature.properties[header]).toFixed(2); // Format to two decimal places
+      } else {
+          mappedData[propertyName] = feature.properties[header];
+      }
+      });
+      
+      mappedData.geometry = feature.geometry;
+      work_id.push(feature.properties.id)
+      console.log(mappedData,"mappedDatamappedData");
+
+      return mappedData;
+    });
+
+    const shapeAreaSum = data.features.reduce((sum, feature) => {
+      return sum + feature.properties.id;
+    }, 0);
+    let uniqueCount = new Set(work_id).size;
+    console.log(work_id.id, "lllllllllllll",work_id,uniqueCount)
+    document.getElementById('tablestats').innerHTML = `
+    
+   
+  `;
+  
+    createTable(exampleData, headers);
+  });
+}
+
+
+
+$(document).ready(function () {
+// Handle click event on minimize-button
+$('#minimize-button').click(function () {
+// Hide the pagination div
+$('#pagination').hide();
+});
+});
 
 
 
@@ -143,17 +208,17 @@ function DataTableFilter(cql_filter1) {
 
   // Define the headers and their display names
   var headerMapping = {
-    "token": "Token",
-    "gut_no": "Survey No",
-    "siteaddress_area": "Village Name",
-    "ownerinformation_firstname": "Owner Name",
-    "caseinformation_grossplotarea": "Plot Area",
-    "caseinformation_applyfor": "Apply For",
-    "caseinformation_casetype": "Case Type",
-    "caseinformation_proposaltype": "Proposal Type",
-    "caseinformation_tdrzone": "TDR Zone",
-    "plotdetails_developmentzonedp": "Development Zone",
-    "entry_timestamp": "Date & Time"
+    "token": "TOKEN",
+    "gut_no": "SURVEY No",
+    "siteaddress_area": "VILLAGE NAME",
+    "ownerinformation_firstname": "OWNER NAME",
+    "caseinformation_grossplotarea": "PLOT AREA",
+    "caseinformation_applyfor": "APPLY FOR",
+    "caseinformation_casetype": "CASE TYPE",
+    "caseinformation_proposaltype": "PROPOSAL TYPE",
+    "caseinformation_tdrzone": "TDR ZONE",
+    "plotdetails_developmentzonedp": "DEVELOPMENT ZONE",
+    "entry_timestamp": "DATE & TIME"
   };
 
   var headers = Object.keys(headerMapping);  // Pass keys from the mapping
@@ -451,7 +516,7 @@ document.getElementById('openTableBtn').addEventListener('click', function (even
     var thead = document.createElement('thead');
     var headerRow = document.createElement('tr');
 
-    headers.unshift('Sr_no'); // Add serial number column
+    headers.unshift('SR_NO'); // Add serial number column
     // Create header cells
     // headers.forEach(headerText => {
     //   var th = document.createElement('th');
