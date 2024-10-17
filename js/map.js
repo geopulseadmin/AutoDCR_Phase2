@@ -27,30 +27,32 @@ var Esri_WorldImagery = L.tileLayer(
   "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 );
 
-var PlotBoundary_Layer = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
-  layers: "Plot_Layout",
-  // layers: "plotboundary",
-  format: "image/png",
-  transparent: true,
-  tiled: true,
-  version: "1.1.0",
-  opacity: 1
-}).addTo(map);
+// var PlotBoundary_Layer = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+//   layers: "Plot_Layout",
+//   // layers: "plotboundary",
+//   format: "image/png",
+//   transparent: true,
+//   tiled: true,
+//   version: "1.1.0",
+//   opacity: 1
+// }).addTo(map);
 
-var Revenue_Layer = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
-  layers: "Revenue_1",
-  format: "image/png",
-  transparent: true,
-  tiled: true,
-  version: "1.1.0",
-  opacity: 1
-});
+// var Revenue_Layer = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
+//   layers: "Revenue_1",
+//   format: "image/png",
+//   transparent: true,
+//   tiled: true,
+//   maxZoom: 25,
+//   version: "1.1.0",
+//   opacity: 1
+// });
 
 var Revenue_Layer1 = L.tileLayer.wms("https://iwmsgis.pmc.gov.in/geoserver/AutoDCR/wms", {
   layers: "Revenue_1",
   format: "image/png",
   transparent: true,
   tiled: true,
+  maxZoom: 25,
   version: "1.1.0",
   opacity: 1
 }).addTo(map);
@@ -135,7 +137,7 @@ var baseLayers = {
 };
 
 var overlayLayers = {
-  "Plot": PlotBoundary_Layer,
+  // "Plot": PlotBoundary_Layer,
   "Boundary": Boundary_Layer,
   "Village": Village_Boundary,
   "Zone_layer":Zone_layer,

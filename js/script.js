@@ -98,7 +98,7 @@ function tableData(typeName, geoServerURL, cqlFilter, headers) {
       headers.forEach(header => {
         // Convert header to camelCase or other naming convention if necessary
         let propertyName = header.replace(/ /g, '');
-        if (header === 'id') {
+        if (header === 'token') {
           mappedData[propertyName] = (feature.properties[header]).toFixed(2); // Format to two decimal places
       } else {
           mappedData[propertyName] = feature.properties[header];
@@ -106,14 +106,14 @@ function tableData(typeName, geoServerURL, cqlFilter, headers) {
       });
       
       mappedData.geometry = feature.geometry;
-      work_id.push(feature.properties.id)
+      work_id.push(feature.properties.token)
       console.log(mappedData,"mappedDatamappedData");
 
       return mappedData;
     });
 
     const shapeAreaSum = data.features.reduce((sum, feature) => {
-      return sum + feature.properties.id;
+      return sum + feature.properties.token;
     }, 0);
     let uniqueCount = new Set(work_id).size;
     console.log(work_id.id, "lllllllllllll",work_id,uniqueCount)
